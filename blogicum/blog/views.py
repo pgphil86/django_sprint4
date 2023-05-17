@@ -107,7 +107,7 @@ class PostCreateView(CreateView, LoginRequiredMixin):
     def get_success_url(self):
         return reverse_lazy(
             'blog:create_post',
-            kwargs={'username': self.request.user},
+            kwargs={'username': self.request.user}
             )
 
     def form_valid(self, form):
@@ -123,13 +123,13 @@ class PostUpdateView(UpdateView, LoginRequiredMixin):
     def get_success_url(self):
         return reverse_lazy(
             'blog:post_detail',
-            kwargs={'pk': self.kwargs['pk']},
+            kwargs={'pk': self.kwargs['pk']}
             )
 
     def dispatch(self, request, *args, **kwargs):
         get_object_or_404(
             Post,
-            pk=self.kwargs['pk'],
+            pk=self.kwargs['pk']
             )
         return super().dispatch(
             request,
@@ -173,7 +173,7 @@ class CommentCreateView(CreateView, LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         self.posts = get_object_or_404(
             Post,
-            pk=kwargs['post_pk'],
+            pk=kwargs['post_pk']
         )
         return super().dispatch(
             request,
@@ -190,7 +190,7 @@ class CommentCreateView(CreateView, LoginRequiredMixin):
     def get_success_url(self):
         return reverse_lazy(
             'blog:post_detail',
-            kwargs={'pk': self.posts.pk},
+            kwargs={'pk': self.posts.pk}
             )
 
 
@@ -202,19 +202,19 @@ class CommentUpdateView(UpdateView, LoginRequiredMixin):
     def get_success_url(self):
         return reverse_lazy(
             'blog:post_detail',
-            kwargs={'pk': self.comment.post.pk},
+            kwargs={'pk': self.comment.post.pk}
             )
 
     def dispatch(self, request, *args, **kwargs):
         self.comment = get_object_or_404(
             Comment,
             pk=kwargs['pk'],
-            author=request.user,
+            author=request.user
             )
         return super().dispatch(
             request,
             *args,
-            **kwargs,
+            **kwargs
             )
 
 
@@ -226,17 +226,17 @@ class CommentDeleteView(DeleteView, LoginRequiredMixin):
     def get_success_url(self):
         return reverse_lazy(
             'blog:post_detail',
-            kwargs={'pk': self.comment.post.pk},
+            kwargs={'pk': self.comment.post.pk}
             )
 
     def dispatch(self, request, *args, **kwargs):
         self.comment = get_object_or_404(
             Comment,
             pk=kwargs['pk'],
-            author=request.user,
+            author=request.user
             )
         return super().dispatch(
             request,
             *args,
-            **kwargs,
+            **kwargs
             )
