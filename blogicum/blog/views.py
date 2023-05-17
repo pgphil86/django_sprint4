@@ -111,7 +111,7 @@ class PostCreateView(CreateView, LoginRequiredMixin):
 
     def get_success_url(self):
         return reverse_lazy(
-            'blog:profile',
+            'blog:create_post',
             kwargs={'username': self.request.user},
             )
 
@@ -135,7 +135,6 @@ class PostUpdateView(UpdateView, LoginRequiredMixin):
         get_object_or_404(
             Post,
             pk=self.kwargs['pk'],
-            author=request.user,
             )
         return super().dispatch(
             request,
@@ -147,25 +146,14 @@ class PostUpdateView(UpdateView, LoginRequiredMixin):
 class PostDeleteView(DeleteView, LoginRequiredMixin):
     model = Post
     template_name = 'blog/create.html'
-    form_class = PostForm(instance=None)
+    form_class = PostForm
+    success_url = reverse_lazy('blog:index')
 
-    def get_success_url(self):
-        return reverse_lazy(
-            'blog:profile',
-            kwargs={'username': self.request.user},
-            )
-
-    def dispatch(self, request, *args, **kwargs):
-        get_object_or_404(
-            Post,
-            pk=self.kwargs['pk'],
-            author=request.user,
-            )
-        return super().dispatch(
-            request,
-            *args,
-            **kwargs,
-            )
+    def delete_func(self):
+        post = self.get_object()
+        if self.request.user == post.author_pk:
+            return True
+        return False
 
 
 class PostDetailView(DetailView, LoginRequiredMixin):
