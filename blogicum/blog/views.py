@@ -73,15 +73,10 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ProfileForm
 
     def get_success_url(self):
-        return reverse_lazy(
-            'blog:edit_profile',
-            )
+        return reverse_lazy('blog:edit_profile')
 
     def get_object(self):
-        return get_object_or_404(
-            User,
-            id=self.request.user.id,
-            )
+        return get_object_or_404(User, id=self.request.user.id)
 
 
 class ProfileListView(ListView, LoginRequiredMixin):
