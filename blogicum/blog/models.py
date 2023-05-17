@@ -98,8 +98,7 @@ class Post(PublishedModel):
         Category,
         on_delete=models.SET_NULL,
         null=True,
-        verbose_name='Категория',
-        )
+        verbose_name='Категория')
     image = models.ImageField('Фото', upload_to='post_media', blank=True)
 
     class Meta:
@@ -124,8 +123,7 @@ class Comment(models.Model):
         verbose_name='Публикация'
     )
     text = models.TextField(
-        verbose_name='Комментарий',
-        )
+        verbose_name='Комментарий')
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
