@@ -106,11 +106,11 @@ class PostCreateView(CreateView, LoginRequiredMixin):
 
     def get_success_url(self):
         return reverse_lazy(
-            'blog:create_post',
-            kwargs={'username': self.request.user})
+            'blog:profile',
+            kwargs={'username': self.request.author})
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        form.instance.author = self.request.author
         form.save()
         return super().form_valid(form)
 
