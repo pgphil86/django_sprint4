@@ -82,8 +82,7 @@ class Post(PublishedModel):
         default=timezone.now,
         verbose_name='Дата и время публикации',
         help_text='Если установить дату и время в будущем — '
-        'можно делать отложенные публикации.',
-        )
+        'можно делать отложенные публикации.')
     author = models.ForeignKey(
         'auth.User',
         on_delete=models.CASCADE,
@@ -101,11 +100,7 @@ class Post(PublishedModel):
         null=True,
         verbose_name='Категория',
         )
-    image = models.ImageField(
-        'Фото',
-        upload_to='post_media',
-        blank=True,
-        )
+    image = models.ImageField('Фото', upload_to='post_media', blank=True)
 
     class Meta:
         verbose_name = 'публикация'
@@ -134,17 +129,15 @@ class Comment(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        verbose_name='Автор комментария'
-        )
+        verbose_name='Автор комментария')
     created_at = models.DateTimeField(
         auto_now_add=True,
-        verbose_name='Добавлено',
-        )
+        verbose_name='Добавлено')
 
     class Meta:
         verbose_name = 'комментарий'
         verbose_name_plural = 'Коментарии'
-        ordering = ('created_at',)
+        ordering = ('created_at', )
 
     def __str__(self):
         return self.text
