@@ -84,9 +84,11 @@ class Post(PublishedModel):
         help_text='Если установить дату и время в будущем — '
         'можно делать отложенные публикации.')
     author = models.ForeignKey(
-        'auth.User',
+        User,
         on_delete=models.CASCADE,
+        null=True,
         verbose_name='Автор публикации',
+        related_name='user'
     )
     location = models.ForeignKey(
         Location,
@@ -106,13 +108,13 @@ class Post(PublishedModel):
         verbose_name_plural = 'Публикации'
 
     def get_absolute_url(self):
-        return reverse("blog:posts", kwargs={"pk": self.pk})
+        return reverse('blog:profile', kwargs={'username': self.request.author})
 
     def __str__(self):
         return self.title
 
 
-class Comment(models.Model):
+class Comment(PublishedModel):
     """
     Documentation of comment module. Describe work of comments.
     """
@@ -127,6 +129,7 @@ class Comment(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
+        null=True,
         verbose_name='Автор комментария')
     created_at = models.DateTimeField(
         auto_now_add=True,
