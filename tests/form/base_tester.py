@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Type, Optional
+from typing import Optional, Type
 
 from django.db.models import Model
 from django.test import Client
-
 from fixtures.types import ModelAdapterT
 
 
