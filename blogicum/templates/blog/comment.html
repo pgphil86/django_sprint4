@@ -19,10 +19,10 @@
           {% endif %}
         </div>
         <div class="card-body">
-          <form method="post">
-            {% if '/edit_comment/' in request.path %}
-              action="{% url 'blog:edit_comment' comment.post_id comment.id %}"
-            {% endif %}>
+          <form method="post"
+          {% if '/edit_comment/' in request.path %}
+            action="{% url 'blog:edit_comment' comment.post_id comment.id %}"
+          {% endif %}>
             {% csrf_token %}
             {% if not '/delete_comment/' in request.path %}
               {% bootstrap_form form %}
