@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -21,7 +22,7 @@ def get_posts_query():
         'category__slug',
         'category__title',
         'text',
-    )
+    ).annotate(comment_count=Count('comments'))
 
 
 class PostListView(ListView, LoginRequiredMixin):
@@ -35,7 +36,7 @@ class PostListView(ListView, LoginRequiredMixin):
             is_published=True,
             category__is_published=True,
             pub_date__lt=timezone.now(),
-        )
+        ).annotate(comment_count=Count('comments'))
 
 
 class CategoryListView(ListView, LoginRequiredMixin):
@@ -50,7 +51,7 @@ class CategoryListView(ListView, LoginRequiredMixin):
             is_published=True,
             category__is_published=True,
             pub_date__lt=timezone.now(),
-        )
+        ).annotate(comment_count=Count('comments'))
 
     def dispatch(self, request, *args, **kwargs):
         self.category = get_list_or_404(Category,
@@ -88,7 +89,7 @@ class ProfileListView(ListView, LoginRequiredMixin):
     def get_queryset(self):
         return get_posts_query().filter(
             author__username__exact=self.kwargs['profile_slug']
-        )
+        ).annotate(comment_count=Count('comments'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -161,8 +162,7 @@ class PostDetailView(DetailView, LoginRequiredMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = CommentForm()
-        context['comments'] = (
-            self.object.comments.select_related('post'))
+        context['comments'] = (self.object.comments.select_related('post'))
         return context
 
 
