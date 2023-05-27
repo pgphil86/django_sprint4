@@ -25,13 +25,13 @@ def get_posts_query():
     )
 
 
-class PostCommentDispatchMixin(LoginRequiredMixin):
+class PostCommentDispatchMixin:
     def dispatch(self, request, *args, **kwargs):
         instance = get_object_or_404(
             self.model,
-            pk=self.kwargs['pk'])
+            pk=kwargs['pk'])
         if instance.author != request.user:
-            return redirect('blog:index')
+            return redirect('blog:post_detail', pk=kwargs['pk'])
         return super().dispatch(
             request,
             *args,
