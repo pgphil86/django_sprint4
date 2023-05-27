@@ -25,7 +25,7 @@ def get_posts_query():
     )
 
 
-class PostCommentDispatchMixin:
+class PostCommentDispatchMixin(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         instance = get_object_or_404(
             self.model,
