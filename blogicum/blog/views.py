@@ -69,7 +69,7 @@ class CategoryListView(ListView, LoginRequiredMixin):
             is_published=True,
             category__is_published=True,
             pub_date__lt=timezone.now(),
-        ).annotate(comment_count=Count('comments'))
+        ).order_by('-pub_date').annotate(comment_count=Count('comments'))
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
