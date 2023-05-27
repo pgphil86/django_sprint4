@@ -46,7 +46,7 @@ class Category(PublishedModel):
         verbose_name_plural = 'Категории'
 
     def __str__(self):
-        return self.title
+        return self.title[:50]
 
 
 class Location(PublishedModel):
@@ -87,13 +87,14 @@ class Post(PublishedModel):
         on_delete=models.CASCADE,
         null=True,
         verbose_name='Автор публикации',
-        related_name='user'
+        related_name='authors',
     )
     location = models.ForeignKey(
         Location,
         on_delete=models.SET_NULL,
         null=True,
         verbose_name='Местоположение',
+        related_name='locations',
     )
     category = models.ForeignKey(
         Category,
@@ -107,7 +108,7 @@ class Post(PublishedModel):
         verbose_name_plural = 'Публикации'
 
     def __str__(self):
-        return self.title
+        return self.title[:50]
 
 
 class Comment(PublishedModel):
