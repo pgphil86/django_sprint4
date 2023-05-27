@@ -92,7 +92,7 @@ class ProfileListView(ListView, LoginRequiredMixin):
         username = self.kwargs['username']
         return get_posts_query().filter(
             author__username__exact=username
-        ).annotate(comment_count=Count('comments'))
+        ).order_by('-pub_date').annotate(comment_count=Count('comments'))
 
     def get_context_data(self, **kwargs):
         username = self.kwargs['username']
