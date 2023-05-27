@@ -63,8 +63,7 @@ class CategoryListView(ListView, LoginRequiredMixin):
         self.category = get_object_or_404(
             Category,
             slug=slug_url_kwarg,
-            is_published=True
-            )
+            is_published=True)
         return get_posts_query().filter(
             category__slug__exact=self.category.slug,
             is_published=True,
