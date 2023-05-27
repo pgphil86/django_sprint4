@@ -118,7 +118,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class PostUpdateView(LoginRequiredMixin, PostCommentDispatchMixin, UpdateView):
+class PostUpdateView(PostCommentDispatchMixin, UpdateView):
     model = Post
     template_name = 'blog/create.html'
     form_class = PostForm
@@ -129,7 +129,7 @@ class PostUpdateView(LoginRequiredMixin, PostCommentDispatchMixin, UpdateView):
             kwargs={'pk': self.kwargs['pk']})
 
 
-class PostDeleteView(LoginRequiredMixin, PostCommentDispatchMixin, DeleteView):
+class PostDeleteView(PostCommentDispatchMixin, DeleteView):
     model = Post
     template_name = 'blog/create.html'
     form_class = PostForm
@@ -163,8 +163,7 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
             kwargs={'pk': self.kwargs['pk']})
 
 
-class CommentUpdateView(LoginRequiredMixin, PostCommentDispatchMixin,
-                        UpdateView):
+class CommentUpdateView(PostCommentDispatchMixin, UpdateView):
     model = Comment
     form_class = CommentForm
     template_name = 'blog/comment.html'
@@ -174,8 +173,7 @@ class CommentUpdateView(LoginRequiredMixin, PostCommentDispatchMixin,
                             kwargs={'pk': self.kwargs['pk']})
 
 
-class CommentDeleteView(LoginRequiredMixin, PostCommentDispatchMixin,
-                        DeleteView):
+class CommentDeleteView(PostCommentDispatchMixin, DeleteView):
     model = Comment
     form_class = CommentForm
     template_name = 'blog/comment.html'
