@@ -1,16 +1,13 @@
-from typing import Any, Optional
+from blog.constans import PAGINATOR
+from blog.forms import CommentForm, PostForm, ProfileForm
+from blog.models import Category, Comment, Post, User
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db import models
 from django.db.models import Count
-from django.shortcuts import get_list_or_404, get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
                                   UpdateView)
-
-from .constans import PAGINATOR
-from .forms import CommentForm, PostForm, ProfileForm
-from .models import *
 
 
 def get_posts_query():
