@@ -1,13 +1,15 @@
-from blog.constans import PAGINATOR
-from blog.forms import CommentForm, PostForm, ProfileForm
-from blog.models import Category, Comment, Post, User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
                                   UpdateView)
+
+from blog.constans import PAGINATOR
+from blog.forms import CommentForm, PostForm, ProfileForm
+from blog.mixins import PostCommentDispatchMixin
+from blog.models import Category, Comment, Post, User
 
 
 def get_posts_query():
@@ -23,19 +25,6 @@ def get_posts_query():
         'category__title',
         'text',
     )
-
-
-class PostCommentDispatchMixin:
-    def dispatch(self, request, *args, **kwargs):
-        instance = get_object_or_404(
-            self.model,
-            pk=kwargs['pk'])
-        if instance.author != request.user:
-            return redirect('blog:post_detail', pk=kwargs['pk'])
-        return super().dispatch(
-            request,
-            *args,
-            **kwargs)
 
 
 class PostListView(ListView, LoginRequiredMixin):
@@ -65,11 +54,15 @@ class CategoryListView(ListView, LoginRequiredMixin):
             slug=slug_url_kwarg,
             is_published=True)
         return get_posts_query().filter(
-            category__slug__exact=self.category.slug,
+            category=self.category,
             is_published=True,
             category__is_published=True,
             pub_date__lt=timezone.now(),
         ).order_by('-pub_date').annotate(comment_count=Count('comments'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -82,24 +75,23 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
 
-class ProfileListView(ListView, LoginRequiredMixin):
+class ProfileListView(ListView):
     model = Post
     template_name = 'blog/profile.html'
     ordering = 'id'
     paginate_by = PAGINATOR
 
     def get_queryset(self):
-        username = self.kwargs['username']
+        self.author = get_object_or_404(
+            User,
+            username=self.kwargs['username'])
         return get_posts_query().filter(
-            author__username__exact=username
+            author__username__exact=self.author
         ).order_by('-pub_date').annotate(comment_count=Count('comments'))
 
     def get_context_data(self, **kwargs):
-        username = self.kwargs['username']
         context = super().get_context_data(**kwargs)
-        context['profile'] = User.objects.get(
-            username=username
-        )
+        context['profile'] = self.author
         return context
 
 
@@ -153,7 +145,7 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
     form_class = CommentForm
 
     def form_valid(self, form):
-        form.instance.post_id = self.kwargs['pk']
+        form.instance.post = get_object_or_404(Post, pk=self.kwargs['pk'])
         form.instance.author = self.request.user
         return super().form_valid(form)
 
