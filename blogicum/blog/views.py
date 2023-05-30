@@ -62,6 +62,7 @@ class CategoryListView(ListView, LoginRequiredMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['category'] = self.category
         return context
 
 
@@ -86,7 +87,7 @@ class ProfileListView(ListView):
             User,
             username=self.kwargs['username'])
         return get_posts_query().filter(
-            author__username__exact=self.author
+            author=self.author
         ).order_by('-pub_date').annotate(comment_count=Count('comments'))
 
     def get_context_data(self, **kwargs):
